@@ -62,6 +62,7 @@
         <td>Contract Status</td>
         <td>Name</td>
         <td>LP Data</td>
+        <td>Chart</td>
       </thead>
       <tbody>
       </tbody>
@@ -281,10 +282,24 @@
         const lpData = `${symbol1}/${symbol2}`;
 
         lpDataCell.textContent = lpData;
+        const chartUrl = `https://dexscreener.com/pulsechain/${address}`;
+        addChartColumn(lpDataCell.parentElement, chartUrl); // Add the "chart" column
       } catch (error) {
         console.error('Error:', error);
       }
     }
+
+
+    function addChartColumn(row, chartUrl) {
+      const chartCell = document.createElement('td');
+      const chartLink = document.createElement('a');
+      chartLink.href = chartUrl;
+      chartLink.target = '_blank';
+      chartLink.textContent = 'dexS';
+      chartCell.appendChild(chartLink);
+      row.appendChild(chartCell);
+    }
+
 
     function filterResults() {
       const filterType = document.querySelector('input[name="filterType"]:checked').value;
