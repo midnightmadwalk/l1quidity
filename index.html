@@ -5,6 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>L1quidity</title>
   <style>
+    body, h1, h3, h4, p, label, button, input, table, th, td {
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    body {
+      background-color: #ffffff;
+      color: #000000;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
@@ -31,38 +40,75 @@
     }
 
     .hidden {
-      display:none;
+      display: none;
+    }
+
+    /* Dark mode styles */
+    body.dark-mode {
+      background-color: #121212;
+      color: #ffffff;
+    }
+
+    body.dark-mode th {
+      background-color: #333333;
+    }
+
+    body.dark-mode td {
+      border-color: #444444;
+    }
+
+    body.dark-mode table {
+      border-color: #444444;
+    }
+
+    .toggle-switch {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>beta version ( may overload )</h1>
-  <h3> Instructions </h4>
-    <h4 style="color: green;"> 1. paste contract and let it run till it searches all the addresses</h4>
-    <h4 style="color: green;"> 2. Zoom out for a good experience and thanks helios.</h4>
+  <div class="toggle-switch">
+    <label>
+      <input type="checkbox" id="nightModeToggle" onclick="toggleNightMode()"> Night Mode
+    </label>
+  </div>
+
+  <h1>beta version (may overload)</h1>
+  <h3>Instructions</h3>
+  <h4 style="color: green;">1. Paste contract and let it run till it searches all the addresses</h4>
+  <h4 style="color: green;">2. Zoom out for a good experience and thanks helios.</h4>
+
   <label for="contractAddressInput">Contract Address:</label>
   <input type="text" id="contractAddressInput" placeholder="Enter contract address">
   <button onclick="fetchTokenData()">Fetch Token Data</button>
+  
   <input type="radio" name="filterType" value="all" id="all" onclick="filterResults()"> Show All
   <input type="radio" name="filterType" value="contract" id="contract" onclick="filterResults()"> Show Contracts
   <input type="radio" name="filterType" value="notContract" id="notContract" onclick="filterResults()"> Show Non-Contracts
   <input type="radio" name="filterType" value="showLP" id="showLP" checked onclick="filterResults()"> Show LP <!-- New radio button -->
+  
   <p id="lpCountDisplay"></p>
 
   <div id="loadingBar">
     <p id="progressText">Loading...</p>
     <progress id="loadingProgress" max="100"></progress>
   </div>
+
   <div id="counters"></div>
   <div id="tokenDataOutput">
     <table class="hidden">
       <thead>
-        <td>Address</td>
-        <td>Value</td>
-        <td>Contract Status</td>
-        <td>Name</td>
-        <td>LP Data</td>
-        <td>Chart</td>
+        <tr>
+          <th>Address</th>
+          <th>Value</th>
+          <th>Contract Status</th>
+          <th>Name</th>
+          <th>LP Data</th>
+          <th>Chart</th>
+        </tr>
       </thead>
       <tbody>
       </tbody>
@@ -74,27 +120,24 @@
     const pageSize = 50; // <-- this mf is slow
 
     function fetchTokenData() {
-      // clear
+      // Clear previous data
       document.querySelector('#tokenDataOutput table tbody').innerHTML = '';
       document.querySelector('#counters').innerHTML = '';
 
       const contractAddressInput = document.getElementById('contractAddressInput');
       const contractAddress = contractAddressInput.value;
 
-      // loading bar
+      // Show loading bar
       const loadingBar = document.getElementById('loadingBar');
       loadingBar.style.display = 'block';
 
-   
       setTimeout(() => {
-        // number of token holders and transfers count
         fetch(`https://api.scan.pulsechain.com/api/v2/tokens/${contractAddress}/counters`)
           .then(response => response.json())
           .then(data => {
             const countersOutput = document.getElementById('counters');
             countersOutput.innerHTML = `<h2>Counters:</h2><p><span>Holders: ${data['token_holders_count']}</span></p><p>Transfers: <span>${data['transfers_count']}</span></p>`;
 
- 
             const tokenHoldersCount = data.token_holders_count;
             const totalPages = Math.ceil(tokenHoldersCount / pageSize);
             let currentPage = 1;
@@ -106,9 +149,6 @@
               fetch(`https://api.scan.pulsechain.com/api?module=token&action=getTokenHolders&contractaddress=${contractAddress}&page=${currentPage}&offset=${pageSize}`)
                 .then(response => response.json())
                 .then(tokenHoldersData => {
-                  // const tokenHoldersOutput = document.getElementById('tokenDataOutput');
-
-
                   tokenHoldersData.result.forEach((entry, index) => {
                     const tr = document.createElement('tr');
 
@@ -132,21 +172,13 @@
                     let tbody = table.querySelector('tbody');
                     tbody.appendChild(tr);
 
-                    // Check if the address is a contract
                     checkIfContract(entry.address, contractCell);
-
-                    // Fetch the name for the address
                     fetchName(entry.address, nameCell);
-
-                    // display it LOL
                     displayResults(entry.address, lpDataCell);
                   });
 
-                  // tokenHoldersOutput.appendChild(table);
-
                   currentPage++;
 
-                  // Progressbar stuff
                   const progressText = document.getElementById('progressText');
                   const loadingProgress = document.getElementById('loadingProgress');
                   const progress = (currentPage / totalPages) * 100;
@@ -176,7 +208,6 @@
     }
 
     function checkIfContract(address, contractCell) {
-      // eth_getCode method to check if the address is a contract
       fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -203,14 +234,12 @@
     }
 
     function fetchName(address, nameCell) {
-      // fetch the name for the address
       fetch(`https://api.scan.pulsechain.com/api/v2/search?q=${address}`)
         .then(response => response.json())
         .then(data => {
           const name = data.items[0]?.name || 'N/A';
           let filter_lp = document.querySelector('#showLP');
-          if ((name.indexOf(' LP') == -1 || name == 'N/A')  && filter_lp.checked) nameCell.parentElement.classList.add('hidden');
-          // if (name == 'N/A') nameCell.parentElement.classList.add('hidden');
+          if ((name.indexOf(' LP') == -1 || name == 'N/A') && filter_lp.checked) nameCell.parentElement.classList.add('hidden');
           nameCell.textContent = name;
         })
         .catch(error => {
@@ -218,49 +247,52 @@
           nameCell.textContent = 'N/A';
         });
     }
+
     async function getTokenInfo(contractAddress) {
-            if (contractAddress == '0x') return false;
-            try {
-                const response = await fetch(`https://api.scan.pulsechain.com/api/v2/tokens/${contractAddress}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                const result = await response.json();
-                return result.symbol || "Symbol not available";
-            } catch (error) {
-                console.error('Error:', error);
-            }
+      if (contractAddress == '0x') return false;
+      try {
+        const response = await fetch(`https://api.scan.pulsechain.com/api/v2/tokens/${contractAddress}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+        const result = await response.json();
+        return result.symbol || "Symbol not available";
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+
     function hexToEthAddress(hex) {
-            return `0x${hex.substring(26)}`;
-        }
+      return `0x${hex.substring(26)}`;
+    }
+
     async function makeEthCall(address, data) {
-        try {
-            const response = await fetch('https://rpc.pulsechain.com', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    jsonrpc: '2.0',
-                    method: 'eth_call',
-                    params: [{
-                        to: address,
-                        data: data,
-                    }, 'latest'],
-                    id: 1,
-                }),
-            });
+      try {
+        const response = await fetch('https://rpc.pulsechain.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_call',
+            params: [{
+              to: address,
+              data: data,
+            }, 'latest'],
+            id: 1,
+          }),
+        });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const result = await response.json();
-            return result.result;
-        } catch (error) {
-            console.error('Error:', error);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        const result = await response.json();
+        return result.result;
+      } catch (error) {
+        console.error('Error:', error);
+      }
     }
 
     async function displayResults(address, lpDataCell) {
@@ -278,17 +310,16 @@
 
         const symbol2 = await getTokenInfo(result2Eth);
         if (!symbol2) return false;
-          // magic
-        const lpData = `${symbol1}/${symbol2}`;
 
+        const lpData = `${symbol1}/${symbol2}`;
         lpDataCell.textContent = lpData;
+
         const chartUrl = `https://dexscreener.com/pulsechain/${address}`;
-        addChartColumn(lpDataCell.parentElement, chartUrl); // Add the "chart" column
+        addChartColumn(lpDataCell.parentElement, chartUrl);
       } catch (error) {
         console.error('Error:', error);
       }
     }
-
 
     function addChartColumn(row, chartUrl) {
       const chartCell = document.createElement('td');
@@ -300,46 +331,47 @@
       row.appendChild(chartCell);
     }
 
-
     function filterResults() {
       const filterType = document.querySelector('input[name="filterType"]:checked').value;
       const rows = document.querySelectorAll('table tbody tr');
-      let lpCount = 0; 
+      let lpCount = 0;
 
       rows.forEach(row => {
         row.classList.remove('hidden');
         const contractCell = row.cells[2];
-        const nameCell = row.cells[3]; 
-        const lpDataCell = row.cells[4]; 
+        const nameCell = row.cells[3];
+        const lpDataCell = row.cells[4];
 
         switch (filterType) {
           case 'all':
-            row.style.display = ''; // Show all rows
+            row.style.display = '';
             break;
           case 'contract':
-            if (contractCell.textContent != 'Contract') row.classList.add('hidden'); // Show contracts
+            if (contractCell.textContent != 'Contract') row.classList.add('hidden');
             break;
           case 'notContract':
-            if (contractCell.textContent == 'Contract') row.classList.add('hidden'); // Show non-contracts
+            if (contractCell.textContent == 'Contract') row.classList.add('hidden');
             break;
           case 'showLP':
             if (nameCell.textContent.toLowerCase().includes(' lp')) {
-              row.classList.remove('hidden'); // Show LP rows
+              row.classList.remove('hidden');
               lpCount++;
             } else {
-              row.classList.add('hidden');// Hide non-LP rows
+              row.classList.add('hidden');
             }
             break;
         }
       });
 
-  if (filterType === 'showLP') {
-    const lpCountDisplay = document.getElementById('lpCountDisplay');
-    lpCountDisplay.textContent = `Number of PulseX LP rows: ${lpCount}`;
-  }
-}
+      if (filterType === 'showLP') {
+        const lpCountDisplay = document.getElementById('lpCountDisplay');
+        lpCountDisplay.textContent = `Number of PulseX LP rows: ${lpCount}`;
+      }
+    }
 
-
+    function toggleNightMode() {
+      document.body.classList.toggle('dark-mode');
+    }
   </script>
 </body>
 </html>
