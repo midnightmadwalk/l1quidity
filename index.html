@@ -69,10 +69,10 @@
     }
   </style>
 </head>
-<body>
+<body class="dark-mode"> <!-- Added dark-mode class by default -->
   <div class="toggle-switch">
     <label>
-      <input type="checkbox" id="nightModeToggle" onclick="toggleNightMode()"> Night Mode
+      <input type="checkbox" id="nightModeToggle" onclick="toggleNightMode()" checked> Night Mode
     </label>
   </div>
 
@@ -370,7 +370,10 @@
     }
 
     function toggleNightMode() {
-      document.body.classList.toggle('dark-mode');
+      const body = document.body;
+      body.classList.toggle('dark-mode');
+      const nightModeToggle = document.getElementById('nightModeToggle');
+      nightModeToggle.checked = body.classList.contains('dark-mode');
     }
   </script>
 </body>
