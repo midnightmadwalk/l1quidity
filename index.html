@@ -167,6 +167,20 @@ body {
 .styleResault:hover {
     transform: scale(110%);
 }
+.autocom-box {
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.search-input.active .autocom-box {
+  padding: 10px 8px;
+  opacity: 1;
+  pointer-events: auto;
+  display: block;
+}
 
   </style>
 </head>
@@ -192,8 +206,7 @@ body {
       <a href="#" target="_blank" hidden></a>
       <input type="text" id="contractAddressInput" placeholder="Type to search..."> 
 
-      <div class="autocom-box">
-        <!-- here list are inserted from javascript -->
+      <div class="autocom-box" style="display: none;"></div>      
       </div>
 
       <div class="icon" onclick="fetchTokenData()">
@@ -505,35 +518,45 @@ body {
       nightModeToggle.checked = body.classList.contains('dark-mode');
     }
 
-          const suggestions = [
-        "A1A - 0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8"
-      ];
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById('contractAddressInput');
+  const autocompleteBox = document.querySelector('.autocom-box');
 
-      function showSuggestions() {
-        const autocomBox = document.querySelector('.autocom-box');
-        autocomBox.innerHTML = suggestions.map(suggestion => `<li onclick="selectSuggestion('${suggestion}')">${suggestion}</li>`).join('');
-        autocomBox.style.display = 'block';
-      }
+  // Predefined suggestion
+  const suggestions = ["A1A - 0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8"];
 
-      function filterSuggestions() {
-        const input = document.getElementById('contractAddressInput').value.toLowerCase();
-        const filteredSuggestions = suggestions.filter(suggestion => suggestion.toLowerCase().includes(input));
-        
-        const autocomBox = document.querySelector('.autocom-box');
-        autocomBox.innerHTML = filteredSuggestions.map(suggestion => `<li onclick="selectSuggestion('${suggestion}')">${suggestion}</li>`).join('');
-      }
+  // Show suggestion when the input is focused or clicked
+  searchInput.addEventListener('focus', () => {
+    showSuggestions(suggestions);
+  });
 
-      function selectSuggestion(suggestion) {
-        document.getElementById('contractAddressInput').value = suggestion;
-        document.querySelector('.autocom-box').style.display = 'none';
-      }
+  // Filter suggestions as user types
+  searchInput.addEventListener('input', () => {
+    const userData = searchInput.value;
+    const filteredSuggestions = suggestions.filter(data => data.toLowerCase().includes(userData.toLowerCase()));
+    showSuggestions(filteredSuggestions);
+  });
 
-      document.addEventListener('click', function(event) {
-        const isClickInside = document.querySelector('.search-input').contains(event.target);
-        if (!isClickInside) {
-          document.querySelector('.autocom-box').style.display = 'none';
-        }
-      });
+  // Handle selecting a suggestion
+  autocompleteBox.addEventListener('click', (e) => {
+    if (e.target.tagName === 'LI') {
+      searchInput.value = e.target.textContent;
+      autocompleteBox.innerHTML = ''; // Clear the suggestions
+    }
+  });
+
+  // Function to show suggestions
+  function showSuggestions(list) {
+    let listData;
+    if (list.length) {
+      listData = list.map(data => `<li>${data}</li>`).join('');
+    } else {
+      listData = '<li>No suggestions found</li>';
+    }
+    autocompleteBox.innerHTML = listData;
+    autocompleteBox.style.display = 'block';
+  }
+});
   </script>
 </body>
 </html>
