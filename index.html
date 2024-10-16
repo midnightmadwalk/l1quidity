@@ -504,6 +504,36 @@ body {
       const nightModeToggle = document.getElementById('nightModeToggle');
       nightModeToggle.checked = body.classList.contains('dark-mode');
     }
+
+          const suggestions = [
+        "A1A - 0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8"
+      ];
+
+      function showSuggestions() {
+        const autocomBox = document.querySelector('.autocom-box');
+        autocomBox.innerHTML = suggestions.map(suggestion => `<li onclick="selectSuggestion('${suggestion}')">${suggestion}</li>`).join('');
+        autocomBox.style.display = 'block';
+      }
+
+      function filterSuggestions() {
+        const input = document.getElementById('contractAddressInput').value.toLowerCase();
+        const filteredSuggestions = suggestions.filter(suggestion => suggestion.toLowerCase().includes(input));
+        
+        const autocomBox = document.querySelector('.autocom-box');
+        autocomBox.innerHTML = filteredSuggestions.map(suggestion => `<li onclick="selectSuggestion('${suggestion}')">${suggestion}</li>`).join('');
+      }
+
+      function selectSuggestion(suggestion) {
+        document.getElementById('contractAddressInput').value = suggestion;
+        document.querySelector('.autocom-box').style.display = 'none';
+      }
+
+      document.addEventListener('click', function(event) {
+        const isClickInside = document.querySelector('.search-input').contains(event.target);
+        if (!isClickInside) {
+          document.querySelector('.autocom-box').style.display = 'none';
+        }
+      });
   </script>
 </body>
 </html>
