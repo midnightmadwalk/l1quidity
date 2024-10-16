@@ -217,6 +217,25 @@ body {
   border-radius: 50%;
   background: white;
 }
+       .autocom-box {
+      position: absolute;
+      z-index: 1000;
+      background: white;
+      border: 1px solid #ddd;
+      width: calc(100% - 20px);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .autocom-box li {
+      padding: 8px 12px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .autocom-box li:hover {
+      background: #efefef;
+    }
 
   </style>
 </head>
@@ -572,6 +591,40 @@ body {
       const nightModeToggle = document.getElementById('nightModeToggle');
       nightModeToggle.checked = body.classList.contains('dark-mode');
     }
+  </script>
+    <script>
+    const suggestions = [
+      { label: "A1A", address: "0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8" }
+    ];
+
+    function suggestAddress() {
+      const input = document.getElementById('contractAddressInput');
+      const autocomBox = document.querySelector('.autocom-box');
+      const inputVal = input.value;
+
+      // Clear previous suggestions
+      autocomBox.innerHTML = '';
+
+      if (inputVal) {
+        // Filter suggestions based on the user's input
+        const filteredSuggestions = suggestions.filter(suggestion =>
+          suggestion.label.toLowerCase().includes(inputVal.toLowerCase())
+        );
+
+        // Populate the suggestion list
+        filteredSuggestions.forEach(suggestion => {
+          const li = document.createElement('li');
+          li.textContent = `${suggestion.label} - ${suggestion.address}`;
+          li.onclick = () => {
+            input.value = suggestion.address; // Autofill input
+            autocomBox.innerHTML = ''; // Clear suggestions
+          };
+          autocomBox.appendChild(li);
+        });
+      }
+    }
+
+    // Your existing fetchTokenData and other functions...
   </script>
 </body>
 </html>
