@@ -518,45 +518,6 @@ body {
       nightModeToggle.checked = body.classList.contains('dark-mode');
     }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const searchInput = document.getElementById('contractAddressInput');
-  const autocompleteBox = document.querySelector('.autocom-box');
-
-  // Predefined suggestion
-  const suggestions = ["A1A - 0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8"];
-
-  // Show suggestion when the input is focused or clicked
-  searchInput.addEventListener('focus', () => {
-    showSuggestions(suggestions);
-  });
-
-  // Filter suggestions as user types
-  searchInput.addEventListener('input', () => {
-    const userData = searchInput.value;
-    const filteredSuggestions = suggestions.filter(data => data.toLowerCase().includes(userData.toLowerCase()));
-    showSuggestions(filteredSuggestions);
-  });
-
-  // Handle selecting a suggestion
-  autocompleteBox.addEventListener('click', (e) => {
-    if (e.target.tagName === 'LI') {
-      searchInput.value = e.target.textContent;
-      autocompleteBox.innerHTML = ''; // Clear the suggestions
-    }
-  });
-
-  // Function to show suggestions
-  function showSuggestions(list) {
-    let listData;
-    if (list.length) {
-      listData = list.map(data => `<li>${data}</li>`).join('');
-    } else {
-      listData = '<li>No suggestions found</li>';
-    }
-    autocompleteBox.innerHTML = listData;
-    autocompleteBox.style.display = 'block';
-  }
-});
   </script>
 </body>
 </html>
