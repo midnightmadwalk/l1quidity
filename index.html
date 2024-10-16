@@ -186,44 +186,7 @@ body {
   background: white;
 }
 
-  </style>
-      <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
 
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            cursor: pointer;
-            color: #0645AD; /* Link color */
-        }
-
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 150px;
-            background-color: #555;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 5px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%; /* Position above the tooltip text */
-            left: 50%;
-            margin-left: -75px; /* Center the tooltip */
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-            opacity: 1;
-        }
-
-
-    </style>
 </head>
 <body class="dark-mode"> <!-- Added dark-mode class by default -->
   <div class="toggle-switch">
@@ -245,14 +208,10 @@ body {
 <br>
     <br>
     <br>
-<div class="tooltip">
-        0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8
-        <span class="tooltiptext" onclick="insertAddress()">Click to copy</span>
-    </div>
         <div class="search-input">
 
       <a href="#" target="_blank" hidden></a>
-      <input type="text" id="contractAddressInput" placeholder="Type to search..."> 
+  <input type="text" id="contractAddressInput" placeholder="Type to search..." value="0x697fc467720B2a8e1b2F7F665d0e3f28793E65e8"> 
 
       <div class="autocom-box">
         <!-- here list are inserted from javascript -->
