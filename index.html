@@ -168,7 +168,6 @@ body {
     transform: scale(110%);
 }
 
-
   </style>
 </head>
 <body class="dark-mode"> <!-- Added dark-mode class by default -->
@@ -192,6 +191,9 @@ body {
     <div class="search-input">
       <a href="#" target="_blank" hidden></a>
       <input type="text" id="contractAddressInput" placeholder="Type to search..."> 
+
+      <div class="autocom-box">
+        <!-- here list are inserted from javascript -->
       </div>
 
       <div class="icon" onclick="fetchTokenData()">
@@ -502,7 +504,6 @@ body {
       const nightModeToggle = document.getElementById('nightModeToggle');
       nightModeToggle.checked = body.classList.contains('dark-mode');
     }
-
   </script>
 </body>
 </html>
