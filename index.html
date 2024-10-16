@@ -81,9 +81,34 @@
   <h4 style="color: green;">1. Paste contract and let it run till it searches all the addresses</h4>
   <h4 style="color: green;">2. Zoom out for a good experience and thanks helios.</h4>
 
-  <label for="contractAddressInput">Contract Address:</label>
-  <input type="text" id="contractAddressInput" placeholder="Enter contract address">
+
+
+  <div class="wrapper">
+
+    <div class="search-input">
+      <label for="contractAddressInput">Contract Address:</label>
+      <a href="#" target="_blank" hidden></a>
+      <input type="text" id="contractAddressInput" placeholder="Type to search..."> 
   <button onclick="fetchTokenData()">Fetch Token Data</button>
+
+      <div class="autocom-box">
+        <!-- here list are inserted from javascript -->
+      </div>
+
+      <div class="icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
+          viewBox="0 0 16 16">
+          <path
+            d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+        </svg>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  
   
   <input type="radio" name="filterType" value="all" id="all" onclick="filterResults()"> Show All
   <input type="radio" name="filterType" value="contract" id="contract" onclick="filterResults()"> Show Contracts
